@@ -57,7 +57,7 @@ fun NewsItem(
                         )
                     }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     sourceName.title?.let {
                         Text(
                             text = it,
@@ -66,20 +66,20 @@ fun NewsItem(
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
-                        Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     sourceName.description?.let {
                         Text(
                             text = it,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "published at  ${sourceName.publishedAt}",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.End,
-                            fontSize = 8.sp
-                        )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "published at  ${sourceName.publishedAt}",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End,
+                        fontSize = 8.sp
+                    )
 
                 }
             }
