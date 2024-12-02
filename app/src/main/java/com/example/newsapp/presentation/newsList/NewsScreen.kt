@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.newsapp.domain.Articles
@@ -21,6 +22,7 @@ import com.example.newsapp.presentation.newsList.NewsItem
 
 @Composable
 fun NewsScreen(
+    navController: NavController,
     news: LazyPagingItems<Articles>
 ) {
     val context = LocalContext.current
@@ -54,7 +56,8 @@ fun NewsScreen(
                     if (item != null) {
                         NewsItem(
                             news = item,
-                            modifier = Modifier
+                            modifier = Modifier,
+                            navController
                         )
                     }
                 }

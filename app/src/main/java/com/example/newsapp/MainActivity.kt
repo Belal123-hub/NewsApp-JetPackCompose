@@ -1,5 +1,6 @@
 package com.example.newsapp
 
+import AppNavigation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.newsapp.presentation.SplashScreen
 import com.example.newsapp.presentation.newsList.NewsScreen
@@ -27,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // State variable to manage splash screen visibility
+                    val navController = rememberNavController()                    // State variable to manage splash screen visibility
                     var isSplashVisible by remember { mutableStateOf(true) }
 
                     // Launch a coroutine to simulate loading time
@@ -42,7 +44,7 @@ class MainActivity : ComponentActivity() {
                     } else {
                         val viewModel = hiltViewModel<NewsViewModel>()
                         val news = viewModel.newsPagingFlow.collectAsLazyPagingItems()
-                        NewsScreen(news = news)
+                        AppNavigation(viewModel)
                     }
                 }
             }

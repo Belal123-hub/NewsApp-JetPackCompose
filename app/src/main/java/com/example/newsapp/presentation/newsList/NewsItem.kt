@@ -1,6 +1,7 @@
 package com.example.newsapp.presentation.newsList
 
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -13,17 +14,21 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.newsapp.domain.Articles
+import com.example.newsapp.navigation.AppScreens
 
 
 @Composable
 fun NewsItem(
     news: Articles,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .clickable {navController.navigate(AppScreens.WebViewScreen.route) },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
