@@ -48,7 +48,7 @@ class NewsRemoteMediator(
                 page = loadKey,
                 pageCount = state.config.pageSize
             )
-            Log.d("NewsApiResponse", "Total articles: ${newsDto.totalResults}, Articles: ${newsDto.articles.size}")
+            Log.d("NewsApiResponse", "Page: $loadKey, Total articles: ${newsDto.totalResults}, Articles: ${newsDto.articles.size}")
 
 
             // Create a list of ArticlesEntity from the articles in newsDto

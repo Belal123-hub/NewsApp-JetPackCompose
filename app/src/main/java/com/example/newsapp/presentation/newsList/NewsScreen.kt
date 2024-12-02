@@ -23,11 +23,14 @@ import com.example.newsapp.presentation.newsList.NewsItem
 @Composable
 fun NewsScreen(
     navController: NavController,
-    news: LazyPagingItems<Articles>
+    news: LazyPagingItems<Articles>,
+    onArticleClick: (String) -> Unit = {} // Optional for flexibility
 ) {
     val context = LocalContext.current
+
+    // Show a toast for errors during refresh
     LaunchedEffect(key1 = news.loadState) {
-        if(news.loadState.refresh is LoadState.Error) {
+        if (news.loadState.refresh is LoadState.Error) {
             Toast.makeText(
                 context,
                 "Error: " + (news.loadState.refresh as LoadState.Error).error.message,
@@ -37,32 +40,29 @@ fun NewsScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if(news.loadState.refresh is LoadState.Loading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
-            )
+        // Show a loading indicator while refreshing
+        if (news.loadState.refresh is LoadState.Loading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         } else {
+            // Display the list of news articles
             LazyColumn(
-                modifier = Modifier
-                    .clickable {
-
-                    }
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 items(news.itemCount) { index ->
                     val item = news[index]
-                    if (item != null) {
+                    item?.let {
                         NewsItem(
-                            news = item,
-                            modifier = Modifier,
-                            navController
+                            news = it,
+                            navController = navController
                         )
                     }
                 }
+
+                // Show a loading indicator while appending new items
                 item {
-                    if(news.loadState.append is LoadState.Loading) {
+                    if (news.loadState.append is LoadState.Loading) {
                         CircularProgressIndicator()
                     }
                 }

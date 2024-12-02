@@ -51,7 +51,10 @@ object AppModule {
     @Singleton
     fun provideNewsPager(newsDb: NewsDatabase, newsApi: NewsApi): Pager<Int, NewsEntity> {
         return Pager(
-            config = PagingConfig(pageSize = 20),
+            config = PagingConfig(
+                pageSize = 5,
+                enablePlaceholders = false
+            ),
             remoteMediator = NewsRemoteMediator(
                 newsDb = newsDb,
                 newsApi = newsApi

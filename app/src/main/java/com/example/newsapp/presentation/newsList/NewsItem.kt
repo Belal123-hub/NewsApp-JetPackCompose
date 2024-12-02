@@ -1,6 +1,7 @@
 package com.example.newsapp.presentation.newsList
 
 
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
@@ -28,7 +29,12 @@ fun NewsItem(
 ) {
     Card(
         modifier = modifier
-            .clickable {navController.navigate(AppScreens.WebViewScreen.route) },
+            .clickable {
+                news.url?.let { url ->
+                    val encodedUrl = Uri.encode(url) // Encode the URL
+                    navController.navigate(AppScreens.WebViewScreen.createRoute(encodedUrl))
+                }
+            },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -51,43 +57,38 @@ fun NewsItem(
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.Center
             ) {
-                val sourceName = news
-
-                if (sourceName != null) {
-                    sourceName.author?.let {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                    sourceName.title?.let {
-                        Text(
-                            text = it,
-                            fontStyle = FontStyle.Italic,
-                            color = Color.LightGray,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    sourceName.description?.let {
-                        Text(
-                            text = it,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
+                news.author?.let {
                     Text(
-                        text = "published at  ${sourceName.publishedAt}",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.End,
-                        fontSize = 8.sp
+                        text = it,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.fillMaxWidth()
                     )
-
                 }
+                Spacer(modifier = Modifier.height(8.dp))
+                news.title?.let {
+                    Text(
+                        text = it,
+                        fontStyle = FontStyle.Italic,
+                        color = Color.LightGray,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                news.description?.let {
+                    Text(
+                        text = it,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Published at ${news.publishedAt}",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.End,
+                    fontSize = 8.sp
+                )
             }
         }
     }
 }
+

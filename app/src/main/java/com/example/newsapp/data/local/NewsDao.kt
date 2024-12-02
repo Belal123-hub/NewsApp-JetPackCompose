@@ -8,7 +8,6 @@ import androidx.room.Upsert
 
 @Dao
 interface NewsDao {
-
     @Upsert
     suspend fun upsertAll(news: List<NewsEntity>)
 

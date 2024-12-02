@@ -1,3 +1,4 @@
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,15 +16,28 @@ import com.example.newsapp.presentation.webview.WebViewScreen
 fun AppNavigation(viewModel: NewsViewModel) {
     val navController = rememberNavController()
 
-    // Assuming you have a way to get your LazyPagingItems<Articles>
-    val news = viewModel.newsPagingFlow.collectAsLazyPagingItems() // replace with your actual implementation
+    // Collect LazyPagingItems<Articles>
+    val news = viewModel.newsPagingFlow.collectAsLazyPagingItems()
 
     NavHost(navController = navController, startDestination = AppScreens.NewsScreen.route) {
         composable(route = AppScreens.NewsScreen.route) {
-            NewsScreen(navController = navController, news = news)
+            NewsScreen(
+                navController = navController,
+                news = news,
+                onArticleClick = { url ->
+                    // Navigate with URL encoding
+                    val encodedUrl = Uri.encode(url)
+                    navController.navigate(AppScreens.WebViewScreen.createRoute(encodedUrl))
+                }
+            )
         }
-        composable(route = AppScreens.WebViewScreen.route) {
-            WebViewScreen(navController = navController)
+        composable(
+            route = AppScreens.WebViewScreen.route,
+            arguments = listOf(navArgument("url") { type = NavType.StringType })
+        ) { backStackEntry ->
+            // Retrieve the decoded URL
+            val url = backStackEntry.arguments?.getString("url")
+            WebViewScreen(navController = navController, url = url)
         }
     }
 }
