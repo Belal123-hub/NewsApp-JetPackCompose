@@ -2,6 +2,7 @@ package com.example.newsapp.presentation.newsList
 
 
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
@@ -11,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,58 +37,54 @@ fun NewsItem(
                     navController.navigate(AppScreens.WebViewScreen.createRoute(encodedUrl))
                 }
             },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = MaterialTheme.shapes.medium
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Max)
-                .padding(16.dp)
+                .height(200.dp)
         ) {
             AsyncImage(
                 model = news.urlToImage,
                 contentDescription = null,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(150.dp)
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.width(16.dp))
+
             Column(
                 modifier = Modifier
-                    .weight(3f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.Center
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .background(Color.Black.copy(alpha = 0.5f))
             ) {
-                news.author?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
                 news.title?.let {
                     Text(
                         text = it,
-                        fontStyle = FontStyle.Italic,
-                        color = Color.LightGray,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.White,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                news.description?.let {
-                    Text(
-                        text = it,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Published at ${news.publishedAt}",
+                Spacer(modifier = Modifier.weight(1f))
+
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.End,
-                    fontSize = 8.sp
-                )
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    news.author?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White
+                        )
+                    }
+                    Text(
+                        text = "Published at ${news.publishedAt}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White
+                    )
+                }
             }
         }
     }
