@@ -14,19 +14,17 @@ import com.example.newsapp.R
 
 @Composable
 fun SplashScreen() {
-    // Define the gradient colors
     val listColors = listOf(
         Color(android.graphics.Color.rgb(234, 127, 127)),
         Color(android.graphics.Color.rgb(132, 71, 71))
     )
 
-    // Create a Column with a gradient background
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Brush.linearGradient(listColors)),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top // Change to Top to keep images at the top
+        verticalArrangement = Arrangement.Top
     ) {
         Image(
             painter = painterResource(R.drawable.educatedcat),

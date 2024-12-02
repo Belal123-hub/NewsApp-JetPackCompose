@@ -15,8 +15,6 @@ import com.example.newsapp.presentation.webview.WebViewScreen
 @Composable
 fun AppNavigation(viewModel: NewsViewModel) {
     val navController = rememberNavController()
-
-    // Collect LazyPagingItems<Articles>
     val news = viewModel.newsPagingFlow.collectAsLazyPagingItems()
 
     NavHost(navController = navController, startDestination = AppScreens.NewsScreen.route) {
@@ -24,18 +22,13 @@ fun AppNavigation(viewModel: NewsViewModel) {
             NewsScreen(
                 navController = navController,
                 news = news,
-                onArticleClick = { url ->
-                    // Navigate with URL encoding
-                    val encodedUrl = Uri.encode(url)
-                    navController.navigate(AppScreens.WebViewScreen.createRoute(encodedUrl))
-                }
+
             )
         }
         composable(
             route = AppScreens.WebViewScreen.route,
             arguments = listOf(navArgument("url") { type = NavType.StringType })
         ) { backStackEntry ->
-            // Retrieve the decoded URL
             val url = backStackEntry.arguments?.getString("url")
             WebViewScreen(navController = navController, url = url)
         }

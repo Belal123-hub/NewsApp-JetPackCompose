@@ -24,7 +24,6 @@ import com.example.newsapp.presentation.newsList.NewsItem
 fun NewsScreen(
     navController: NavController,
     news: LazyPagingItems<Articles>,
-    onArticleClick: (String) -> Unit = {} // Optional for flexibility
 ) {
     val context = LocalContext.current
 
@@ -40,11 +39,9 @@ fun NewsScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Show a loading indicator while refreshing
         if (news.loadState.refresh is LoadState.Loading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         } else {
-            // Display the list of news articles
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -59,8 +56,6 @@ fun NewsScreen(
                         )
                     }
                 }
-
-                // Show a loading indicator while appending new items
                 item {
                     if (news.loadState.append is LoadState.Loading) {
                         CircularProgressIndicator()

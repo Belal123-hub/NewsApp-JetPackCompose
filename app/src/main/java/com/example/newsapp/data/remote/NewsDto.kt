@@ -11,7 +11,6 @@ data class ArticlesDto (
     val publishedAt : String? = null,
     val content     : String? = null
 )
-
 data class NewsDto(
     val status: String,
     val totalResults: Int?= null,

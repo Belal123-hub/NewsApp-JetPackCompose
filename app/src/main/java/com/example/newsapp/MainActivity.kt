@@ -32,13 +32,10 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()                    // State variable to manage splash screen visibility
                     var isSplashVisible by remember { mutableStateOf(true) }
 
-                    // Launch a coroutine to simulate loading time
                     LaunchedEffect(Unit) {
                         delay(2000) // Show splash for 2 seconds
                         isSplashVisible = false
                     }
-
-                    // Show SplashScreen or NewsScreen based on the state
                     if (isSplashVisible) {
                         SplashScreen()
                     } else {

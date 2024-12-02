@@ -50,8 +50,6 @@ class NewsRemoteMediator(
             )
             Log.d("NewsApiResponse", "Page: $loadKey, Total articles: ${newsDto.totalResults}, Articles: ${newsDto.articles.size}")
 
-
-            // Create a list of ArticlesEntity from the articles in newsDto
             val newsEntities = newsDto.articles.map { article ->
                 ArticlesEntity(
                     author = article.author,
@@ -63,25 +61,21 @@ class NewsRemoteMediator(
                     content = article.content
                 )
             }
-
-            // Create a NewsEntity that includes the list of ArticlesEntity
             val newsEntity = NewsEntity(
-               // Handle this for unique IDs
                 status = newsDto.status,
                 totalResults = newsDto.totalResults,
-                articles = ArrayList(newsEntities) // Convert List to ArrayList
+                articles = ArrayList(newsEntities)
             )
 
             newsDb.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    newsDb.dao.delete() // Clear existing data if refreshing
+                    newsDb.dao.delete()
                 }
-                // Upsert the NewsEntity which contains the list of ArticlesEntity
-                newsDb.dao.upsertAll(listOf(newsEntity)) // Wrap newsEntity in a list
+                newsDb.dao.upsertAll(listOf(newsEntity))
             }
 
             MediatorResult.Success(
-                endOfPaginationReached = newsDto.articles.isEmpty() // Check if articles are empty
+                endOfPaginationReached = newsDto.articles.isEmpty()
             )
         } catch (e: IOException) {
             MediatorResult.Error(e)

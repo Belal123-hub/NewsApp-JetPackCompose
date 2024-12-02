@@ -24,7 +24,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     @Provides
     @Singleton
     fun provideNewsDatabase(@ApplicationContext context: Context): NewsDatabase {
@@ -36,7 +35,6 @@ object AppModule {
             .fallbackToDestructiveMigration()
             .build()
     }
-
     @Provides
     @Singleton
     fun provideNewsApi(): NewsApi {
@@ -46,14 +44,14 @@ object AppModule {
             .build()
             .create()
     }
-
     @Provides
     @Singleton
     fun provideNewsPager(newsDb: NewsDatabase, newsApi: NewsApi): Pager<Int, NewsEntity> {
         return Pager(
             config = PagingConfig(
                 pageSize = 5,
-                enablePlaceholders = false
+                enablePlaceholders = false,
+                prefetchDistance = 5
             ),
             remoteMediator = NewsRemoteMediator(
                 newsDb = newsDb,
