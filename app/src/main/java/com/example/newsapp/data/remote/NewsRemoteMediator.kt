@@ -2,6 +2,7 @@ package com.example.newsapp.data.remote
 
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState.Loading.endOfPaginationReached
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -9,6 +10,7 @@ import androidx.room.withTransaction
 import com.example.newsapp.data.local.ArticlesEntity
 import com.example.newsapp.data.local.NewsDatabase
 import com.example.newsapp.data.local.NewsEntity
+import com.example.newsapp.data.local.NewsRemoteKeys
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -18,6 +20,7 @@ class NewsRemoteMediator(
     private val newsApi: NewsApi
 ) : RemoteMediator<Int, NewsEntity>() {
 
+    private val newsRemoteKeysDao = newsDb.newsRemoteKeysDao()
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, NewsEntity>
@@ -28,25 +31,23 @@ class NewsRemoteMediator(
                 LoadType.REFRESH -> 1 // Start from page 1
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    val lastItem = state.lastItemOrNull()
-                    if (lastItem == null) {
-                        1 // First page if no items loaded
+                    val nextPageFromDb = newsRemoteKeysDao.getLatestNextPage()
+                    val nextPage = if (nextPageFromDb != null && nextPageFromDb <= 5) {
+                        nextPageFromDb
                     } else {
-                        val nextPage = lastItem.totalResults?.let { totalResults ->
-                            // Calculate next page number based on total results and page size
-                            (totalResults / state.config.pageSize) + 1
-                        } ?: 1
-                        nextPage
+                        5
                     }
+                    nextPage
                 }
+
             }
             Log.d("Pagination", "LoadKey: $loadKey")
 
             // Fetch news from the API with the correct page number and page size
             val newsDto = newsApi.getNews(
                 page = loadKey,
-                pageCount = state.config.pageSize
-            )
+
+                )
 
             Log.d(
                 "NewsApiResponse",
@@ -73,13 +74,23 @@ class NewsRemoteMediator(
                 articles = newsEntities // List of articles directly
             )
 
+
             // Upsert the data into the database
             newsDb.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     newsDb.dao.delete() // Clear existing data if refreshing
+                    newsRemoteKeysDao.deleteAllRemoteKeys()
                 }
+                val prevPage = if (loadKey == 1 || loadKey == 0) null else loadKey - 1
+                val nextPage = if (endOfPaginationReached) null else loadKey + 1
+                val newsRemoteKeys = NewsRemoteKeys(
+                    id = 1,
+                    prevPage= prevPage,
+                    nextPage = nextPage
+                )
                 // Upsert the NewsEntity which contains the list of ArticlesEntity
                 newsDb.dao.upsertAll(listOf(newsEntity)) // Wrap newsEntity in a list
+                newsRemoteKeysDao.addALlRemoteKeys(newsRemoteKeys)
             }
 
             MediatorResult.Success(
@@ -91,12 +102,4 @@ class NewsRemoteMediator(
             MediatorResult.Error(e)
         }
     }
-
-    fun getKey(state: PagingState<Int, NewsEntity>): Int? {
-        // Use the key from the last item or return null if it can't be determined
-        return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.totalResults
-        }
-    }
 }
-

@@ -10,10 +10,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.newsapp.presentation.SplashScreen
-import com.example.newsapp.presentation.newsList.NewsScreen
 import com.example.newsapp.presentation.newsList.NewsViewModel
 import com.example.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,7 +27,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val navController = rememberNavController()                    // State variable to manage splash screen visibility
                     var isSplashVisible by remember { mutableStateOf(true) }
 
                     LaunchedEffect(Unit) {
@@ -40,7 +37,6 @@ class MainActivity : ComponentActivity() {
                         SplashScreen()
                     } else {
                         val viewModel = hiltViewModel<NewsViewModel>()
-                        val news = viewModel.newsPagingFlow.collectAsLazyPagingItems()
                         AppNavigation(viewModel)
                     }
                 }

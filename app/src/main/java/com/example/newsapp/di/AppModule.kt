@@ -49,7 +49,7 @@ object AppModule {
     fun provideNewsPager(newsDb: NewsDatabase, newsApi: NewsApi): Pager<Int, NewsEntity> {
         return Pager(
             config = PagingConfig(
-                pageSize = 20,
+                pageSize = 500,
                 enablePlaceholders = false,
                 prefetchDistance = 5
             ),
